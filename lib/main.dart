@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 
 enum Flavor { Development, Staging, Production }
 
+
 Future<void> main() {
   const String appFlavor = String.fromEnvironment('FLUTTER_APP_FLAVOR');
   Flavor flavor = Flavor
@@ -22,12 +23,12 @@ Future<void> main() {
 
 
 Future<void> mainCommon(Flavor flavor) async {
-  bool debuggable = flavor == Flavor.Development;
+  final debuggable = flavor == Flavor.Development;
   await NotificationController.initializeLocalNotifications(debug: debuggable);
   await NotificationController.initializeRemoteNotifications(debug: debuggable);
   await NotificationController.initializeIsolateReceivePort();
   await NotificationController.getInitialNotificationAction();
-  runApp(const MyApp());
+  runApp(MyApp(flavor));
 }
 
 
@@ -489,7 +490,8 @@ class NotificationController extends ChangeNotifier {
 ///  *********************************************
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final Flavor flavor;
+  const MyApp(this.flavor, {super.key});
 
   // The navigator key is necessary to navigate using static methods
   static GlobalKey<NavigatorState> navigatorKey =
@@ -548,7 +550,13 @@ class _AppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Awesome Notifications - Simple Example',
+      title: '${
+        switch(widget.flavor) {
+          Flavor.Development => '[DEV] ',
+          Flavor.Staging => '[STG] ',
+          Flavor.Production => '',
+        }
+      }AWN - Simple Example',
       navigatorKey: MyApp.navigatorKey,
       onGenerateInitialRoutes: onGenerateInitialRoutes,
       onGenerateRoute: onGenerateRoute,
