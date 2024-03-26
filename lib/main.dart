@@ -9,11 +9,22 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
-import 'flavors.dart';
+enum Flavor { Development, Staging, Production }
+
+Future<void> main() {
+  const String appFlavor = String.fromEnvironment('FLUTTER_APP_FLAVOR');
+  Flavor flavor = Flavor
+      .values
+      .firstWhere((f) => f.name == appFlavor);
+
+  return mainCommon(flavor);
+}
+
 
 Future<void> mainCommon(Flavor flavor) async {
-  await NotificationController.initializeLocalNotifications(debug: true);
-  await NotificationController.initializeRemoteNotifications(debug: true);
+  bool debuggable = flavor == Flavor.Development;
+  await NotificationController.initializeLocalNotifications(debug: debuggable);
+  await NotificationController.initializeRemoteNotifications(debug: debuggable);
   await NotificationController.initializeIsolateReceivePort();
   await NotificationController.getInitialNotificationAction();
   runApp(const MyApp());
