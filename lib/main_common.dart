@@ -9,7 +9,9 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
-Future<void> main() async {
+import 'flavors.dart';
+
+Future<void> mainCommon(Flavor flavor) async {
   await NotificationController.initializeLocalNotifications(debug: true);
   await NotificationController.initializeRemoteNotifications(debug: true);
   await NotificationController.initializeIsolateReceivePort();

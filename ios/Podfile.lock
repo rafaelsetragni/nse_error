@@ -19,10 +19,10 @@ PODS:
   - Firebase/Messaging (10.22.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 10.22.0)
-  - firebase_core (2.27.1):
+  - firebase_core (2.27.2):
     - Firebase/CoreOnly (= 10.22.0)
     - Flutter
-  - firebase_crashlytics (3.4.19):
+  - firebase_crashlytics (3.4.20):
     - Firebase/Crashlytics (= 10.22.0)
     - firebase_core
     - Flutter
@@ -161,8 +161,8 @@ SPEC CHECKSUMS:
   awesome_notifications_core: d02eed89738fa362d56cbd372850e9adcd2c6bef
   awesome_notifications_fcm: fefecaddb87c36b2434e34b47f4461404c1132ab
   Firebase: 797fd7297b7e1be954432743a0b3f90038e45a71
-  firebase_core: d6dfb4cb86a9ebd92464bb8736075fe967211c97
-  firebase_crashlytics: 0be8c89a6b91fd964a7a8fe574109fd528d310bb
+  firebase_core: cc49b6648d6dd7570d9273a616cb1205260db91e
+  firebase_crashlytics: a5050259f9e6989a44c131dbf14887a434b4395a
   FirebaseCore: 0326ec9b05fbed8f8716cddbf0e36894a13837f7
   FirebaseCoreExtension: 6394c00b887d0bebadbc7049c464aa0cbddc5d41
   FirebaseCoreInternal: bca337352024b18424a61e478460547d46c4c753
