@@ -23,7 +23,7 @@ Future<void> main() {
 
 
 Future<void> mainCommon(Flavor flavor) async {
-  final debuggable = flavor == Flavor.Development;
+  final debuggable = flavor != Flavor.Production;
   await NotificationController.initializeLocalNotifications(debug: debuggable);
   await NotificationController.initializeRemoteNotifications(debug: debuggable);
   await NotificationController.initializeIsolateReceivePort();
