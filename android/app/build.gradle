@@ -23,6 +23,26 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+flavorDimensions "app"
+
+productFlavors {
+    Development {
+        dimension "app"
+        resValue "string", "app_name", "[DEV] NSE Test"
+        applicationIdSuffix ".dev"
+    }
+    Staging {
+        dimension "app"
+        resValue "string", "app_name", "[STG] NSE Test"
+        applicationIdSuffix ".stg"
+    }
+    Production {
+        dimension "app"
+        resValue "string", "app_name", "NSE Test"
+        applicationIdSuffix ""
+    }
+}
+
 android {
     namespace "com.example.nse_error"
     compileSdkVersion flutter.compileSdkVersion
