@@ -9,12 +9,26 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
-Future<void> main() async {
-  await NotificationController.initializeLocalNotifications(debug: true);
-  await NotificationController.initializeRemoteNotifications(debug: true);
+enum Flavor { Development, Staging, Production }
+
+
+Future<void> main() {
+  const String appFlavor = String.fromEnvironment('FLUTTER_APP_FLAVOR');
+  Flavor flavor = Flavor
+      .values
+      .firstWhere((f) => f.name == appFlavor);
+
+  return mainCommon(flavor);
+}
+
+
+Future<void> mainCommon(Flavor flavor) async {
+  final debuggable = flavor != Flavor.Production;
+  await NotificationController.initializeLocalNotifications(debug: debuggable);
+  await NotificationController.initializeRemoteNotifications(debug: debuggable);
   await NotificationController.initializeIsolateReceivePort();
   await NotificationController.getInitialNotificationAction();
-  runApp(const MyApp());
+  runApp(MyApp(flavor));
 }
 
 
@@ -83,20 +97,53 @@ class NotificationController extends ChangeNotifier {
         // On this example app, the app ID / Bundle Id are different
         // for each platform, so i used the main Bundle ID + 1 variation
         [
-          // com.example.nseError
+          // com.example.nseError:
           '2024-02-15==j9pA1Z9FooDTkpNLuzmMNSpavRJEzBY9hQ4ygw7lgNktJmjZCcfK5G'
               'Gw73ZFuSZAw2NDWF1ke2BGPUMyADjpOk7fRXzDXKPH9DiiZ+k2Ko75jxdaco43'
               '8iNYYeduq6RMRM4dGupAAzAPCrjr2oaM+09qQwZ0zWyU4L5T3lDgUlvdbkiW9Q'
               'rW4G1zxU14a5aTQGxNkN2ujb0Y36NoSlgrJih8DXE2lLrqxKmqZI8Xm3KterQk'
               'j3BTjFanX9gf1sIbd5dc0mTdul263Goi+z7VMKw+sRtnnJVWDIoLpfwduEItpW'
               'gIITbAq6PnRiNLyRgv/+bcGgf3RmZBQn3lkCLwbg==',
-          // com.example.nse_error
+
+          // com.example.nseError.dev:
+          '2024-02-15==YLNuolDRGugMaLmCNU17pg4Zt77aDf/WUSaVTf+C/Be4kK0EdPDel6'
+              'Hjt/wY5Y2OsCd9vbtIoilS9hgmSBbmu6zRIphNdCTsN6dYFRJbYC2+JIclUZef'
+              '8U4kRgS9kh3seNXTVPWx79N8w69ZnFUxZa4thMTHi2S/nsRPuggMbf9eGMQrQI'
+              'R88tNI6nA/MWs1hXige/Ls8fbUtokzHyqOAT68qqMoFNn30Y5fytXHQ93uc3rQ'
+              'hK82Lez1pCjiWlybDI5/U0B6ya9JgoDyRVHkqV6tVlSuugtLOqA76Eb9npwzaW'
+              'L4upmSdhinb/NSS7rVwZc+hQMuVq8cv+FBapnNcQ==',
+
+          // com.example.nseError.stg:
+          '2024-02-15==mmhyEt7tGu/fBHgTpuJxthyFW4rEThcyqlnsX2IrtdwHHrzBrbx0Bu'
+              'n8FKg9NskdJueMYMw5nIa91vNt3SN63zq76K2/h//UliPmQ8jSeJLynfVT9R9K'
+              'zNTCvkRFL9ZTJhnrcvz/371kRL8Qm1ncNRgpGYFyY0xAWMJqRu9gD1sohEJEtd'
+              'qUe9f+e9sr1Tp2j2GguAHy1TDNG+zyXDaC9G4rrzmhPQUsGGjtMqUGQztr2m4W'
+              'yOQIdy7qhOz7TnaHnxX5EUgzvz44w/+eaX5APvoHM4+H5gK7EP/v+x3l+GHaVU'
+              'eOKv4ZXDNJtg8IBXycv9xtvk+kuWWveHn1ll6+YA==',
+
+          // com.example.nse_error:
           '2024-02-15==cuZ3U5bamRWMz9H3xaAvWDImtydTAUwEoJSPFvxYcofOuWh9lkfj7N'
               'vt4XJiL31tP+bHqEfLyhWbdFFl+I15SDJfPUoPqPgArTFyKqAQN8+o5IX3B5Vc'
               '50BvznXpsoDaCokNNqsC/f78AxSp1IxUO8DgvlrUo+dM4IIyrWEidumI7J2nnh'
               'qqdI8L/33Oi4f5A2DX+kEPKr+inYh/xJsbIr7Psrpug9SiawqMmTLZr3fNrbY5'
               'F+y//9HW6sCKS2PDrmUAiYYEKykqmPFZOAX/m/N/Mr0bziT1AlOEIc50WgNuCp'
               'NS22UUDgZooNAV4+AHpBUufyAZ4+qQQ+G1qoWiOw==',
+
+          // com.example.nse_error.dev:
+          '2024-02-15==hN8JKlUxY6wHnaICMhJlfrwcdqXNpeK8nxX5YvAd+oesX8wPLUmcZm'
+              'kAOJlmxBG59JFnDUZExzSHijpI+fWcV7bnu7W9ewD0QZlhjvZdt6b3iieDlIMs'
+              'r9ldgQweMIm1TVjxLu8fqRa4feMOXufH66Zq+ZVzNrsoE+IE35iMBVWppkj0gZ'
+              'ee5s0GTJBCF2vsZM7Fn0JsXozgPIsecnV8tP+BEGkEc4YWnp5cjN50jYobALKE'
+              'mgKufe2+/PoK/qR7fkNC2Gich52WcNS21kXx9b3VCFEaaGbuORdRexTCoRO9dJ'
+              '1OgVK4FsiUVoXDyX1wxXIluqqWfvbxU0ThZRYmrQ==',
+
+          // com.example.nse_error.stg:
+          '2024-02-15==Yn/TImh3qYCHSCuPlh0i3wsVEb2pPsbgSsZyhVEJFmp8vjEZHOivqO'
+              'etPBNBi6tkV9GAY1NQwWLPfOLFqkCzHnG1kuW8y0khrvAPYnQYlM4Mdm074fBC'
+              'PHB97CW2U8h57tAZw52P84SVXTACe2Wh5h+ynZptKQwDf2sPASTYBwy/enmnes'
+              '0H9CsbSkoUCbA46F3iWyNc+5fzHECIIq3d8geTQb5Iudi1pjAUftRHsolNynpk'
+              '1taR6ag8fT/L8cv/JM0aCYF4GJccogbKQAH8fZmz946wkpdN9Doe5PfnoLrSOG'
+              'dd/dyiB0Zj1z3YD3Q8m15j0fBX2UH7WfuKq12DjQ==',
         ],
         debug: debug);
   }
@@ -443,7 +490,8 @@ class NotificationController extends ChangeNotifier {
 ///  *********************************************
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final Flavor flavor;
+  const MyApp(this.flavor, {super.key});
 
   // The navigator key is necessary to navigate using static methods
   static GlobalKey<NavigatorState> navigatorKey =
@@ -502,7 +550,13 @@ class _AppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Awesome Notifications - Simple Example',
+      title: '${
+        switch(widget.flavor) {
+          Flavor.Development => '[DEV] ',
+          Flavor.Staging => '[STG] ',
+          Flavor.Production => '',
+        }
+      }AWN - Simple Example',
       navigatorKey: MyApp.navigatorKey,
       onGenerateInitialRoutes: onGenerateInitialRoutes,
       onGenerateRoute: onGenerateRoute,

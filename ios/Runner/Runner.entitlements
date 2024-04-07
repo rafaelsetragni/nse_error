@@ -6,7 +6,7 @@
 	<string>development</string>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.awn.71e10d1b</string>
+		<string>group.nseError.fixedAppGroup</string>
 	</array>
 </dict>
 </plist>
